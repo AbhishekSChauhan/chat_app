@@ -1,8 +1,8 @@
 
 .received_msg {
     display: inline-block;
-    padding: 0 0 0 10px;
-    float: left;
+    padding: 0 0 0 0px;
+    /* float: left; */
     vertical-align: top;
     width: 100%;
 }
@@ -27,9 +27,10 @@
     background: #05728f none repeat scroll 0 0;
     border-radius: 3px;
     font-size: 14px;
-    margin: 0; color:#fff;
+    margin: 0; 
+    color:#fff;
     padding: 5px 10px 5px 12px;
-    width:100%;
+    width:85%;
 }
 .outgoing_msg{ 
     /* overflow:hidden; */
@@ -67,11 +68,11 @@
 .picture_preview {
     transition-duration: 100ms;
     transition-timing-function: ease-in-out;
-    filter: blur(2px);
+    /* filter: blur(2px); */
 }
 
 .media_icon:hover .picture_preview {
-    filter: blur(0px);
+    /* filter: blur(0px); */
 }
 
 .picture_container {

@@ -12,15 +12,17 @@ const MessageBubble = ({direction,message}) => {
     useEffect(()=>{
         const getMsgType=async()=>{
             const res=await message.getParticipant()
+            // console.log('message.getParticipant()',res);
             setMsgType(res.type)
-            console.log('res',res.type);
+            // const attachedMedia=message.attachedMedia
+            // console.log('attached media',attachedMedia.map(e=>e.services.mcsClient.network.config.mediaUrl));
             if(hasMedia){
               try{
                 const mediaRes=await message.media.getContentTemporaryUrl()
-                console.log('mediaRes',mediaRes);
+                // console.log('mediaRes',mediaRes);
                 setMediaUrl(mediaRes)
               }catch(e){
-                console.log('erro',e);
+                console.log('error',e);
                 setMediaDownloadFailed(true)
               }              
             }

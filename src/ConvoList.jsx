@@ -1,11 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { List, Typography } from "antd";
 const { Text } = Typography;
 
-const ConvoList = ({ conversations, selectedConversationSid, onConversationClick }) => {
-  return (
+const ConvoList = ({ conversation, setMessagesArray,latestTextValue, setParticipantIdentity,setSelectedConversationSid }) => {
+    const [participants, setParticipants] = useState([])
+    const setSID=(id)=>{
+        setSelectedConversationSid(id)
+        getParticipant(id)
+    }
+
+    useEffect(()=>{
+        getMessages()
+    },[])
+console.log(conversation.friendlyName);
+    const getParticipant=async()=>{
+        try{
+            const res=await conversation.getParticipants()
+            // console.log('participants res',res); 
+            setParticipants(res)           
+        }catch(err){
+            console.log('participants err',err);
+        }
+    }
+
+    // Assigning participants to check incoming and outgoing msgs
+    const identity=(participants.map((e)=>{
+        if(e.identity!==null){
+            return e.sid
+        }
+    }).filter(e=>e!==undefined).join(''))
+    setParticipantIdentity(identity)
+
+    const getMessages=async()=>{
+        try{
+            const res=await conversation.getMessages()
+            // console.log('messages res',res); 
+            setMessagesArray(res.items)
+            // let msgArray=res.items
+            // console.log("msgArray",msgArray[msgArray.length-2].type);
+
+            // setParticipants(res)           
+        }catch(err){
+            console.log('messages err',err);
+        }
+    }
+
+    return (
+    
     <div>
-        <List
+        <div onClick={()=>setSID(conversation.sid)}>
+            <strong>
+                {conversation.friendlyName}
+            </strong>
+            <p>{latestTextValue}</p>
+        </div>
+        {/* <List
                 header={"Open Conversations"}
                 dataSource={conversations}
                 renderItem={item => {
@@ -30,7 +79,7 @@ const ConvoList = ({ conversations, selectedConversationSid, onConversationClick
                         </List.Item>
                     )
                 }}
-            />
+            /> */}
     </div>
   )
 }

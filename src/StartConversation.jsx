@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Client } from "@twilio/conversations";
 import ConvoList from './ConvoList';
 import Conversation from './Conversation';
@@ -10,6 +10,13 @@ const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => 
     const [statusString, setStatusString] = useState(null)
     const [conversations, setConversations] = useState([])
     const [selectedConversationSid, setSelectedConversationSid] = useState('')
+    const [participantIdentity, setParticipantIdentity] = useState('')
+    const [messagesArray, setMessagesArray] = useState([])
+    const [messages, setMessages] = useState([])
+
+    useEffect(()=>{
+        handleInit(tokenValue)
+    },[])
 
     const initConversations=async(token)=>{       
         // console.log(tokenValue)
@@ -49,15 +56,25 @@ const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => 
 
 
         client.onWithReplay('conversationJoined',(conversation)=>{
-            // console.log('joining convo');
+            console.log('joining convo',conversation);
             
             setConversations([...conversations,conversation])
-            })
+        })
+        // client.onWithReplay('participantJoined',(participant)=>{
+        //     console.log('participantJoined',participant);
+        // })
+        // client.onWithReplay('typingStarted',(participant)=>{
+        //     console.log('typing',participant._startTyping());
+        // })
         client.onWithReplay('conversationLeft',(conversation)=>{
             // console.log('convo left');
             let filter=conversations.filter(it=>it!==conversation)
             setConversations(filter)
         })
+
+        // client.on('participantJoined',(participant)=>{
+        //     console.log('participantJoined',participant);
+        // })
 
         client.on('tokenExpired',()=>{
             setStatusString('token is Expired')
@@ -66,14 +83,20 @@ const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => 
     }
 
     const handleInit=(token)=>{
-        initConversations(token)
+        if(conversations.length===0){
+            initConversations(token)
+        }
+        if(conversations.length>1){
+            console.log('already in a conversation');
+        }
+        // initConversations(token)
     }
 
-    const uniqConversation=conversations.filter((e,i,a)=>a.indexOf(e)===i)
-    console.log('conversations',conversations,selectedConversationSid,uniqConversation);
+    // console.log('conversations SID',selectedConversationSid);
 
     const selectedConversation = conversations.find((e)=>e.sid===selectedConversationSid)
-console.log('selectCOnvo',selectedConversation);
+
+    // console.log('selectCOnvo',selectedConversation);
     let conversationContent;
 
     if(selectedConversation){
@@ -82,14 +105,62 @@ console.log('selectCOnvo',selectedConversation);
                 conversation={selectedConversation} 
                 // phoneNumber={phoneNumber}
                 companyId={companyId}
+                participantIdentity={participantIdentity}
+                messages={messages}
+                setMessages={setMessages}
             />
         )
+    } 
+    // else if (status !== "success") {
+    //     conversationContent = "Loading your conversation!";
+    // }
+    
+
+    const getConversationBySid=async(selectedConversation)=>{
+        try{
+            const res=await selectedConversation.getConversationBySid()
+            // console.log('getConversationBySid res',res);
+        }catch(e){
+            // console.log('getConversationBySid err',e);
+        }
+    }
+
+    // console.log('setMessagesArray',messagesArray);
+    // console.log('messages',messages);
+    // let msg=messagesArray[messagesArray.length-1]
+    // const condition=msg?.type
+    let latestTextValue    
+    // if(condition==='text'){
+    //     latestTextValue=msg?.body
+    // }
+    // if(condition==='media'){
+    //     latestTextValue="Image"
+    // }
+
+    // let latestTextValue
+        if(messages.length===0){
+            let msg=messagesArray[messagesArray.length-1]
+            let condition=msg?.type
+            if(condition==='text'){
+                latestTextValue=msg?.body
+            }else if(condition==='media'){
+                latestTextValue="Image"
+            }
+        }else{
+            let msg=messages[messages.length-1]
+            let condition=msg?.type
+            if(condition==='text'){
+                latestTextValue=msg?.body
+            }else if(condition==='media'){
+                latestTextValue="Image"
+            }
     }
 
     return (
         <div style={{display:'flex'}}>
             <div >
                 <AllConversationsList 
+                    latestTextValue={latestTextValue}
                     handleInit={handleInit}
                     tokenValue={tokenValue}
                     friendlyName={friendlyName}
@@ -98,6 +169,8 @@ console.log('selectCOnvo',selectedConversation);
                     setSelectedConversationSid={setSelectedConversationSid}
                     status={status}
                     conversationContent={conversationContent}
+                    setParticipantIdentity={setParticipantIdentity}
+                    setMessagesArray={setMessagesArray}
                 />         
             </div>
             <div>

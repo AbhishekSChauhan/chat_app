@@ -30,10 +30,10 @@ const Media = ({hasFailed,url}) => {
 
         {!hasFailed && url && (
             <div className={'media_icon'}>
-            <div style={{ zIndex: 123, position: "absolute" }}>
+            {/* <div style={{ zIndex: 123, position: "absolute" }}>
                 View
-              {/* <Icon type={"eye"} style={{ fontSize: "5em", opacity: 0.3 }} /> */}
-            </div>
+              <Icon type={"eye"} style={{ fontSize: "5em", opacity: 0.3 }} />
+            </div> */}
             <div
               className={'picture_preview'}
               style={{ backgroundImage: `url(${url})`, zIndex: 122 }}
