@@ -11,8 +11,8 @@ const ConvoList = ({ conversation, setMessagesArray,latestTextValue, setParticip
 
     useEffect(()=>{
         getMessages()
-    },[])
-console.log(conversation.friendlyName);
+    },[conversation])
+// console.log(conversation.friendlyName);
     const getParticipant=async()=>{
         try{
             const res=await conversation.getParticipants()
@@ -50,7 +50,8 @@ console.log(conversation.friendlyName);
     <div>
         <div onClick={()=>setSID(conversation.sid)}>
             <strong>
-                {conversation.friendlyName}
+                {conversation.friendlyName!==null ? conversation.friendlyName: conversation.configuration.userIdentity}
+                {/* {conversation.friendlyName} || {conversation.userIdentity} */}
             </strong>
             <p>{latestTextValue}</p>
         </div>

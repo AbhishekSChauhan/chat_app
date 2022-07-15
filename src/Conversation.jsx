@@ -31,7 +31,7 @@ const Conversation = ({conversation,participantIdentity,companyId,messages,setMe
     const [imgDropActive, setImgDropActive] = useState(false)
     const [status, setStatus] = useState(null)
   
-    // console.log('conversation',conversation);
+    // console.log('conversation',conversation.configuration.userIdentity);
 
     useEffect(()=>{
         loadMessagesFor(conversation)
@@ -146,7 +146,7 @@ const Conversation = ({conversation,participantIdentity,companyId,messages,setMe
     const sendMessage=async(e)=>{
         e.preventDefault()
         const chatData={
-            "phone_number" : conversation.friendlyName,
+            "phone_number" : conversation.friendlyName!==null?conversation.friendlyName:conversation.configuration.userIdentity,
             "message_body" : newMessage,
             "media_url":''
         }  

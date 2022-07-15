@@ -5,7 +5,7 @@ import Conversation from './Conversation';
 import ConversationComponent from './ConversationComponent';
 import AllConversationsList from './AllConversationsList';
 
-const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => {
+const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId,isConversationAdded}) => {
     const [status, setStatus] = useState(null)
     const [statusString, setStatusString] = useState(null)
     const [conversations, setConversations] = useState([])
@@ -14,9 +14,19 @@ const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => 
     const [messagesArray, setMessagesArray] = useState([])
     const [messages, setMessages] = useState([])
 
+    const handleInit=(token)=>{
+        if(conversations.length===0){
+            initConversations(token)
+        }
+        if(conversations.length>1){
+            console.log('already in a conversation');
+        }
+        // initConversations(token)
+    }
+    
     useEffect(()=>{
         handleInit(tokenValue)
-    },[])
+    },[tokenValue])
 
     const initConversations=async(token)=>{       
         // console.log(tokenValue)
@@ -82,15 +92,7 @@ const StartConversation = ({friendlyName,tokenValue,refreshToken,companyId}) => 
 
     }
 
-    const handleInit=(token)=>{
-        if(conversations.length===0){
-            initConversations(token)
-        }
-        if(conversations.length>1){
-            console.log('already in a conversation');
-        }
-        // initConversations(token)
-    }
+    
 
     // console.log('conversations SID',selectedConversationSid);
 
